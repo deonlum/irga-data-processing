@@ -87,7 +87,7 @@ clean_my_file = function(my_data){
 plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE){
   
   plot_val = numeric(length(unique(my_data$m_session)))
-  resp_val = numeric(length(unique(my_data$m_session)))
+  delta_val = numeric(length(unique(my_data$m_session)))
   grad_val = numeric(length(unique(my_data$m_session)))
   
   end_flag = TRUE
@@ -103,7 +103,7 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
     
     plot_val[my_session] = curr_plot # Getting plot number
     calc_data = curr_data[start_time:end_time,] # Subsetting desired start/end
-    resp_val[my_session] = tail(calc_data$p2, 1) - calc_data$p2[1]
+    delta_val[my_session] = tail(calc_data$p2, 1) - calc_data$p2[1]
     
     ## Fitting a lm, could cause errors here so doing a trycatch
     tryCatch({
@@ -137,7 +137,7 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
   }
   
   data.frame(plot_no = plot_val, 
-             resp = resp_val,
+             delta = delta_val,
              grad = grad_val,
              session = unique(my_data$m_session))
 }
