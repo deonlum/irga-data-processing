@@ -6,16 +6,16 @@ fix_my_file = function(file_name = file.choose(), save_file = FALSE){
   ## storing filename and reading file in binary
   new_filename = paste0("./", gsub(".txt", "_fixed.txt", basename(file_name)))
   n = file.size(file_name)
-  buffer = readBin(file_name, 'raw', n = n)
+  bin_file = readBin(file_name, 'raw', n = n)
   
   ## Removing nulls
-  buffer = buffer[buffer != 0L]
+  bin_file = bin_file[bin_file != 0L]
   
   ## Seems like the encoding issue mainly affects the reading of a new line
   ## (the entry is also replaced but not sure how to fix that)
   ## Fixing this by adding new lines to anything prior to a
   ## M5 value. Note this bit might need to change if measurement type != M5
-  text = rawToChar(buffer)
+  text = rawToChar(bin_file)
   fixed_data = gsub("(?<!\\r\\n)M5", "\r\nM5", text, perl = TRUE)
   
   fixed_data = read.table(text = fixed_data, fill = TRUE, sep = ",",
