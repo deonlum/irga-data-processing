@@ -1,6 +1,5 @@
 ---
 title: "Processing EGM5 data"
-author: deon
 output:
   github_document:
     toc: true
