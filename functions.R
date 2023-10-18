@@ -35,7 +35,6 @@ fix_my_file = function(file_name = file.choose(), save_file = FALSE){
                 quote = FALSE, row.names = FALSE)
   }
   
-  print(head(fixed_data))
   fixed_data
 }
 
@@ -72,6 +71,9 @@ clean_my_file = function(my_data){
   ## We'll now also ignore any rows that are not measurement M5
   relevant_data = relevant_data[relevant_data$mtype == "M5",]
   
+  ## And also rows with NA (likely from encoding issues). We'll look at p3 for this.
+  relevant_data = relevant_data[!is.na(relevant_data$p3),]
+  
   ## Reindex data
   rownames(relevant_data) = 1:nrow(relevant_data)
   cat(nrow(my_data) - nrow(relevant_data), "rows removed", "\n")
@@ -103,6 +105,16 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
     calc_data = curr_data[start_time:end_time,] # Subsetting desired start/end
     resp_val[my_session] = tail(calc_data$p2, 1) - calc_data$p2[1]
     
+    ## Fitting a lm, could cause errors here so doing a trycatch
+    tryCatch({
+      my_mod = lm(p2 ~ p3, data = calc_data)
+      grad_val[my_session] = my_mod$coef[2]
+      
+      pred_vals = data.frame(x = calc_data$p3,
+                             y = predict(my_mod))
+      
+    }, error = function(e){cat("Issue fitting model:", conditionMessage(e), "\n")})
+    
     
     if (show_plots == TRUE){
       my_title = paste("S:", my_session, "; Plot:", curr_plot)
@@ -113,18 +125,10 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
       mtext(side = 3, line = 2, cex = 1, my_title, font = 2)
       mtext(side = 3, line = 1, cex = 0.8, my_subtitle)
       
-      cat("plot", curr_plot, ": ", resp_val[my_session], "\n")
+      tryCatch({lines(pred_vals$x, pred_vals$y, col = "red")})
       
-      ## Fitting a lm, could cause errors here so doing a trycatch
-      tryCatch({
-        my_mod = lm(p2 ~ p3, data = calc_data)
-        grad_val[my_session] = my_mod$coef[2]
-        
-        pred_vals = data.frame(x = start_time:end_time,
-                               y = predict(my_mod))
-        lines(pred_vals$x, pred_vals$y, col = "red")
-        
-      }, error = function(e){cat("Issue fitting model:", conditionMessage(e), "\n")})
+      cat("plot", curr_plot, ": ", resp_val[my_session], "\n")
+
       
       
       readline()
