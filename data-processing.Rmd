@@ -1,18 +1,56 @@
 ---
-title: "R Notebook"
+title: "Processing EGM5 data"
 output: github_document
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+We'll load the functions from the script on GitHub.
 
 ```{r}
-plot(cars)
+library(devtools)
+source("functions.R")
+#source_url("https://github.com/deonlum/irga-data-processing/blob/main/functions.R")
+
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+We'll have a look at some raw IRGA data I collected.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+```{r}
+file_name = "./sample_data/sample_data.txt"
+raw_data = read.table(file_name, fill = TRUE, sep = ",")
+head(raw_data)
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```
+
+In this particular file, there are some encoding errors. I'm not sure what causes it but I've had it in a few of my files. Some examples:
+
+```{r}
+raw_data[11:16,]
+raw_data[641:646,]
+
+```
+
+We can fix this by running fix_my_file. What this does is make sure every proper data line is entered as a new line. So we don't get issues like in lines 14 and 644. It won't work properly if your measurement type is different (i.e., not M5), or if you have other encoding issues. I've not come across others but if you do, you could also do this step manually by editing the txt file directly.
+
+If you're not sure if you do have issues, you could run this anyway - it shouldn't change your data.
+
+```{r}
+fixed_data = fix_my_file(file_name)
+fixed_data[11:16,]
+fixed_data[641:646,]
+```
+
+Lines 14 and 644 are now fixed. We can now run clean_my_file, which helps to remove irrelevant rows and prepare it for analysis.
+
+```{r}
+clean_data = clean_my_file(fixed_data)
+head(clean_data)
+```
+
+Only rows between start and stop are retained. Additionally, a measurement session variable has now been included to allow us to distinguish all the different sessions (i.e., one start/stop cycle). For example, m_session = 1 was the first measurement I took that day, which was for plot 18 at 10:56AM and m_session = 2 was the second one for plot 15 at 11:03AM. This might be useful in case you have multiple measurements for the same plot (in my case, I sometimes abort and rerun the same plot, so there'll be two sessions with the same plot number).
+
+The data can be analysed at this point. The final function plot_my_data was written as what I needed it to be. But you can probably just process the clean_data dataframe in anyway you want.
+
+```{r}
+final_data = plot_my_data(clean_data, show_plots = FALSE)
+final_data
+```
