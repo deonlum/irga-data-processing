@@ -1,5 +1,6 @@
 Processing EGM5 data
 ================
+deon
 
 -   <a href="#1-tldr-workflow" id="toc-1-tldr-workflow">1 TL;DR workflow</a>
 -   <a href="#2-overview" id="toc-2-overview">2 Overview</a>
@@ -138,16 +139,15 @@ work for anything else), or if you have other encoding issues. I’ve not
 come across others but if you do, you could also perform this step
 manually by editing the .txt file directly. I was originally processing
 files manually but it gets tedious if you have to sift through a bunch
-of data files to check - and also could cause issues with deleting
-appropriate data.
+of data files to check - and could cause issues if data are errorneously
+deleted.
 
-Also, if you’re not sure if your file has similar issues, you can
-(should?) run this anyway - it shouldn’t change your data if there
-aren’t issues. At worst, there’s a (very low) possibility it’ll add some
-empty lines in your file that get taken out with the next function. The
-function also makes sure the data is in an appropriate format for
-clean_my_file by giving it appropriate column names, so maybe just run
-this anyway.
+If you’re not sure if your file has similar issues, you can (should?)
+run this anyway - it shouldn’t change your data if there aren’t issues.
+At worst, there’s a (very low) possibility it’ll add some empty lines in
+your file that get taken out with the next function. Also, the function
+makes sure the data is in an appropriate format for clean_my_file by
+giving it appropriate column names, so maybe just run this anyway.
 
 ``` r
 fixed_data = fix_my_file(file_name)
@@ -246,20 +246,20 @@ manually editing the .txt file to delete the extra “Start”s or “End”s.
 After running clean_my_file, the data can be analysed in a number of
 ways. This final function (plot_my_data) was written to be what I needed
 it to be. But you can probably just process the clean_data dataframe in
-anyway you want.
+any way you want.
 
 plot_my_data has a few arguments you can input:
 
-start_time and end_time can be altered to limit analysis to the desired
-time. For example, if I wanted to discard the first 30 seconds, I’d set
-start_time = 31, and if I wanted to end if 3 minutes after, I’d set
-end_time = 211.
+-   start_time and end_time can be altered to limit analysis to the
+    desired time. For example, if I wanted to discard the first 30
+    seconds, I’d set start_time = 31, and if I wanted to end if 3
+    minutes after, I’d set end_time = 211.
 
-show_plots = TRUE will allow you to run through all the individual
-plots, pressing enter each time to move to the next plot (hit esc to
-quit out of it). Informative but probably set show_plots = FALSE if you
-have a ton of plots. Note that it plots all measurements, ignoring the
-start_time/end_time arguments.
+-   show_plots = TRUE will allow you to run through all the individual
+    plots, pressing enter each time to move to the next plot (hit esc to
+    quit out of it). Informative but probably set show_plots = FALSE if
+    you have a ton of plots. Note that it plots all measurements,
+    ignoring the start_time/end_time arguments.
 
 As an example, here’s the final data set for the start and end times I
 mention earlier:
