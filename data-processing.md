@@ -1,6 +1,5 @@
 Processing EGM5 data
 ================
-deon
 
 -   <a href="#1-tldr-workflow" id="toc-1-tldr-workflow">1 TL;DR workflow</a>
 -   <a href="#2-overview" id="toc-2-overview">2 Overview</a>
