@@ -89,6 +89,7 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
   plot_val = numeric(length(unique(my_data$m_session)))
   delta_val = numeric(length(unique(my_data$m_session)))
   grad_val = numeric(length(unique(my_data$m_session)))
+  r2_val = numeric(length(unique(my_data$m_session)))
   
   end_flag = TRUE
   if (end_time == 0){end_flag = FALSE} # Set a flag to know no end time provided
@@ -109,6 +110,7 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
     tryCatch({
       my_mod = lm(p2 ~ p3, data = calc_data)
       grad_val[my_session] = my_mod$coef[2]
+      r2_val[my_session] = summary(my_mod)$r.squared
       
       pred_vals = data.frame(x = calc_data$p3,
                              y = predict(my_mod))
@@ -118,20 +120,19 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
     
     if (show_plots == TRUE){
       my_title = paste("S:", my_session, "; Plot:", curr_plot)
-      my_subtitle = paste("Total change =", resp_val[my_session])
+      my_subtitle = paste("Total change =", delta_val[my_session])
       
-      plot(curr_data$p3, curr_data$p2, xlab = "time", ylab = expression(paste(Delta, " ppm")),
+      plot(curr_data$p3, curr_data$p2, xlab = "time", 
+           ylab = expression(paste(Delta, " ppm")),
            type = 'l')
       mtext(side = 3, line = 2, cex = 1, my_title, font = 2)
       mtext(side = 3, line = 1, cex = 0.8, my_subtitle)
       
       tryCatch({lines(pred_vals$x, pred_vals$y, col = "red")})
       
-      cat("plot", curr_plot, ": ", resp_val[my_session], "\n")
-
+      cat("plot", curr_plot, ": ", delta_val[my_session], "\n")
       
-      
-      readline()
+      readline("Press Enter to go to the next plot. Esc to stop.")
     }
     
   }
@@ -139,5 +140,6 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
   data.frame(plot_no = plot_val, 
              delta = delta_val,
              grad = grad_val,
+             r2 = r2_val,
              session = unique(my_data$m_session))
 }
