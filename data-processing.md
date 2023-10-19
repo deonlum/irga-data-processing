@@ -18,7 +18,10 @@ Processing EGM5 data
 2)  Input the appropriate `file_name` and run the functions in order.
 
 ``` r
-source("functions.R")
+devtools::source_url("https://raw.githubusercontent.com/deonlum/irga-data-processing/main/functions.R")
+```
+
+``` r
 file_name = "./sample_data/sample_data.txt"
 fixed_data = fix_my_file(file_name)
 clean_data = clean_my_file(fixed_data)
@@ -70,9 +73,9 @@ downloaded copy in your working directory, or (3) downloading the R
 script and running it.
 
 ``` r
-#devtools::source_url("https://github.com/deonlum/irga-data-processing/blob/main/functions.R") # Source from URL
+devtools::source_url("https://raw.githubusercontent.com/deonlum/irga-data-processing/main/functions.R") ## Source from URL
 
-source("functions.R") # Source from R script
+#source("functions.R") ## Or if sourcing from R script
 ```
 
 ## 2.1 A look at some data
