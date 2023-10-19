@@ -10,8 +10,10 @@ output:
 
 (1) Get the functions from the source file 
 (2) Input the appropriate `file_name` and run the functions in order.
+```{r, message = FALSE}
+devtools::source_url("https://raw.githubusercontent.com/deonlum/irga-data-processing/main/functions.R")
+```
 ```{r, results = FALSE}
-source("functions.R")
 file_name = "./sample_data/sample_data.txt"
 fixed_data = fix_my_file(file_name)
 clean_data = clean_my_file(fixed_data)
@@ -28,10 +30,10 @@ This is a set of three functions to help with processing the EGM5 data. The func
 
 We'll begin by loading in the functions from `functions.R`. This can be done in a few ways: (1) sourcing from the GitHub URL (simpler, always updated; just make sure devtools is installed), (2) sourcing it from a downloaded copy in your working directory, or (3) downloading the R script and running it.
 
-```{r}
-#devtools::source_url("https://github.com/deonlum/irga-data-processing/blob/main/functions.R") # Source from URL
+```{r, message = FALSE}
+devtools::source_url("https://raw.githubusercontent.com/deonlum/irga-data-processing/main/functions.R") ## Source from URL
 
-source("functions.R") # Source from R script
+#source("functions.R") ## Or if sourcing from R script
 
 ```
 
