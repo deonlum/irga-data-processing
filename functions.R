@@ -18,7 +18,8 @@ fix_my_file = function(file_name = file.choose(), save_file = FALSE){
   text = rawToChar(bin_file)
   fixed_data = gsub("(?<!\\r\\n)M5", "\r\nM5", text, perl = TRUE)
   
-  fixed_data = read.table(text = fixed_data, fill = TRUE, sep = ",",
+  fixed_data = read.table(text = fixed_data, fill = TRUE, quote = "",
+                          sep = ",",
                           col.names = c("mtype", "date", "time", 
                                         "plot_no", "rec_no.",
                                         "CO2_ppm", "atm_pressure", 
