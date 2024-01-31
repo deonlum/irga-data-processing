@@ -105,6 +105,10 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
     
     plot_val[my_session] = curr_plot # Getting plot number
     calc_data = curr_data[curr_data$p3>=start_time & curr_data$p3<=end_time,] # Subsetting desired start/end
+    
+    # Skip if calc_data doesn't have enough data
+    if(nrow(calc_data) == 0){next}
+    
     delta_val[my_session] = tail(calc_data$p2, 1) - calc_data$p2[1]
     
     ## Fitting a lm, could cause errors here so doing a trycatch
