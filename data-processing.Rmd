@@ -14,7 +14,7 @@ output:
 devtools::source_url("https://raw.githubusercontent.com/deonlum/irga-data-processing/main/functions.R")
 ```
 ```{r, results = FALSE}
-file_name = "./sample_data/sample_data.txt"
+file_name = "./sample_data/sample_data_updated.txt"
 fixed_data = fix_my_file(file_name)
 clean_data = clean_my_file(fixed_data)
 final_data = plot_my_data(clean_data, start_time = 31, end_time = 211, show_plots = FALSE)
@@ -41,7 +41,7 @@ devtools::source_url("https://raw.githubusercontent.com/deonlum/irga-data-proces
 We'll have a look at some data I collected. Note the warning message below.
 
 ```{r}
-file_name = "./sample_data/sample_data.txt"
+file_name = "./sample_data/sample_data_updated.txt"
 raw_data = read.table(file_name, fill = TRUE, sep = ",")
 head(raw_data[,1:8]) # truncating the output for neatness
 ```
@@ -108,3 +108,16 @@ final_data
 * `grad` = gradient of the fitted linear model (note this says nothing about the fit of the line)
 * `r2` = R squared value of the fitted linear model
 * `session` = measurement session
+
+## Varying start and end times in plot_my_data
+
+Start and end times can now be varied in `plot_my_data` by entering them as a vector in the start or end time argument.
+
+```{r}
+# Arbitrarily setting some start and end times
+my_start_times = 1:24
+my_end_times = 120-1:24
+
+final_data = plot_my_data(clean_data, start_time = my_start_times, end_time = my_end_times, show_plots = FALSE)
+final_data
+```
