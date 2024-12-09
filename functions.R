@@ -91,25 +91,45 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
   delta_val = numeric(length(unique(my_data$m_session)))
   grad_val = numeric(length(unique(my_data$m_session)))
   r2_val = numeric(length(unique(my_data$m_session)))
+  my_starts = numeric(length(unique(my_data$m_session)))
+  my_ends = numeric(length(unique(my_data$m_session)))
   
-  end_flag = TRUE
-  if (end_time == 0){end_flag = FALSE} # Set a flag to know no end time provided
+#  end_flag = TRUE
+#  if (end_time == 0){end_flag = FALSE} # Set a flag to know no end time provided
+  
+  if(length(start_time)==1){start_time = rep(start_time, length(unique(my_data$m_session)))}
+  if(length(end_time)==1){end_time = rep(end_time, length(unique(my_data$m_session)))}
+
+  counter = 0
   
   for (my_session in unique(my_data$m_session)){
-    
+    counter = counter + 1
     curr_data = my_data[my_data$m_session == my_session,]
     curr_plot = curr_data$plot_no[1]
     
-    # If end time is not provided, just use the whole dataset
-    if(end_flag == FALSE) {end_time = nrow(curr_data)}
+    ## Adding in a way to accept vectors of start/end times
+    curr_start_time = start_time[counter]
     
+    # If end time is not provided, just use the whole dataset
+    curr_end_time = end_time[counter]
+    if(curr_end_time == 0){
+      curr_end_time = nrow(curr_data)
+    }
+    
+    # if(end_flag == FALSE) {
+    #   curr_end_time = nrow(curr_data)
+    # } else {curr_end_time = end_time[counter]}
+    # 
     plot_val[my_session] = curr_plot # Getting plot number
-    calc_data = curr_data[curr_data$p3>=start_time & curr_data$p3<=end_time,] # Subsetting desired start/end
+    
+    calc_data = curr_data[curr_data$p3>=curr_start_time & curr_data$p3<=curr_end_time,] # Subsetting desired start/end
     
     # Skip if calc_data doesn't have enough data
     if(nrow(calc_data) == 0){next}
     
     delta_val[my_session] = tail(calc_data$p2, 1) - calc_data$p2[1]
+    my_starts[my_session] = curr_start_time
+    my_ends[my_session] = curr_end_time
     
     ## Fitting a lm, could cause errors here so doing a trycatch
     tryCatch({
@@ -126,12 +146,14 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
     if (show_plots == TRUE){
       my_title = paste("S:", my_session, "; Plot:", curr_plot)
       my_subtitle = paste("Total change =", delta_val[my_session])
+      my_times = paste("Start =", curr_start_time, "; End =", curr_end_time)
       
       plot(curr_data$p3, curr_data$p2, xlab = "time", 
            ylab = expression(paste(Delta, " ppm")),
            type = 'l')
-      mtext(side = 3, line = 2, cex = 1, my_title, font = 2)
-      mtext(side = 3, line = 1, cex = 0.8, my_subtitle)
+      mtext(side = 3, line = 3, cex = 1, my_title, font = 2)
+      mtext(side = 3, line = 2, cex = 0.8, my_subtitle)
+      mtext(side = 3, line = 1, cex = 0.6, my_times)
       
       tryCatch({lines(pred_vals$x, pred_vals$y, col = "red")})
       
@@ -146,5 +168,7 @@ plot_my_data = function(my_data, start_time = 1, end_time = 0, show_plots = TRUE
              delta = delta_val,
              grad = grad_val,
              r2 = r2_val,
-             session = unique(my_data$m_session))
+             session = unique(my_data$m_session),
+             start_time = my_starts,
+             end_time = my_ends)
 }
