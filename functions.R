@@ -16,6 +16,9 @@ fix_my_file = function(file_name = file.choose(), save_file = FALSE){
   ## Fixing this by adding new lines to anything prior to a
   ## M5 value. Note this bit might need to change if measurement type != M5
   text = rawToChar(bin_file)
+  
+  # Not sure what's going on with my computer but added this to change encoding back to native
+  Encoding(text) = 'latin1'
   fixed_data = gsub("(?<!\\r\\n)M5", "\r\nM5", text, perl = TRUE)
   
   fixed_data = read.table(text = fixed_data, fill = TRUE, quote = "",
