@@ -1,16 +1,14 @@
 Processing EGM5 data
 ================
 
--   <a href="#1-tldr-workflow" id="toc-1-tldr-workflow">1 TL;DR workflow</a>
--   <a href="#2-overview" id="toc-2-overview">2 Overview</a>
-    -   <a href="#21-a-look-at-some-data" id="toc-21-a-look-at-some-data">2.1 A
-        look at some data</a>
-    -   <a href="#22-resolving-encoding-errors"
-        id="toc-22-resolving-encoding-errors">2.2 Resolving encoding errors</a>
-    -   <a href="#23-cleaning-up-data" id="toc-23-cleaning-up-data">2.3 Cleaning
-        up data</a>
-    -   <a href="#24-analysing-the-data" id="toc-24-analysing-the-data">2.4
-        Analysing the data</a>
+- [1 TL;DR workflow](#1-tldr-workflow)
+- [2 Overview](#2-overview)
+  - [2.1 A look at some data](#21-a-look-at-some-data)
+  - [2.2 Resolving encoding errors](#22-resolving-encoding-errors)
+  - [2.3 Cleaning up data](#23-cleaning-up-data)
+  - [2.4 Analysing the data](#24-analysing-the-data)
+  - [2.5 Varying start and end times in
+    plot_my_data](#25-varying-start-and-end-times-in-plot_my_data)
 
 # 1 TL;DR workflow
 
@@ -22,38 +20,38 @@ devtools::source_url("https://raw.githubusercontent.com/deonlum/irga-data-proces
 ```
 
 ``` r
-file_name = "./sample_data/sample_data.txt"
+file_name = "./sample_data/sample_data_updated.txt"
 fixed_data = fix_my_file(file_name)
 clean_data = clean_my_file(fixed_data)
 final_data = plot_my_data(clean_data, start_time = 31, end_time = 211, show_plots = FALSE)
 final_data
 ```
 
-    ##    plot_no delta       grad        r2 session
-    ## 1       18    11 0.06479671 0.9834629       1
-    ## 2       15    11 0.05712723 0.9694242       2
-    ## 3       22     9 0.04880192 0.9697688       3
-    ## 4       13     9 0.06027159 0.9640789       4
-    ## 5        7    16 0.08527190 0.9767292       5
-    ## 6        9    17 0.09013822 0.9769603       6
-    ## 7        6    22 0.12339117 0.9918767       7
-    ## 8       17    13 0.07624107 0.9859947       8
-    ## 9       19    11 0.06298747 0.9841913       9
-    ## 10      12    14 0.07540526 0.9819641      10
-    ## 11      11    14 0.08890071 0.9576906      11
-    ## 12      23    12 0.06795580 0.9804856      12
-    ## 13      16    14 0.08128832 0.9562424      13
-    ## 14      24    10 0.05373219 0.9767987      14
-    ## 15      20    10 0.06082812 0.9689407      15
-    ## 16       3    16 0.09321029 0.9867619      16
-    ## 17      14    16 0.08824294 0.9903690      17
-    ## 18       4    19 0.10432680 0.9889139      18
-    ## 19      10    16 0.09770708 0.9786230      19
-    ## 20      21     9 0.05597312 0.9631024      20
-    ## 21       1    16 0.09010382 0.9885939      21
-    ## 22       5    14 0.07560008 0.9768009      22
-    ## 23       8    16 0.08754579 0.9875822      23
-    ## 24       2    16 0.08773099 0.9895489      24
+    ##    plot_no delta       grad        r2 session start_time end_time
+    ## 1       18    11 0.06479671 0.9834629       1         31      211
+    ## 2       15    11 0.05693479 0.9693733       2         31      211
+    ## 3       22     9 0.04884671 0.9693819       3         31      211
+    ## 4       13     9 0.06027159 0.9640789       4         31      211
+    ## 5        7    16 0.08515439 0.9763935       5         31      211
+    ## 6        9    17 0.09013822 0.9769603       6         31      211
+    ## 7        6    21 0.12318932 0.9918772       7         31      211
+    ## 8       17    13 0.07624107 0.9859947       8         31      211
+    ## 9       19    11 0.06298747 0.9841913       9         31      211
+    ## 10      12    14 0.07540526 0.9819641      10         31      211
+    ## 11      11    14 0.08876596 0.9570105      11         31      211
+    ## 12      23    12 0.06795580 0.9804856      12         31      211
+    ## 13      16    14 0.08128832 0.9562424      13         31      211
+    ## 14      24    10 0.05368267 0.9764279      14         31      211
+    ## 15      20    10 0.06082812 0.9689407      15         31      211
+    ## 16       3    16 0.09321029 0.9867619      16         31      211
+    ## 17      14    16 0.08824896 0.9902119      17         31      211
+    ## 18       4    19 0.10432680 0.9889139      18         31      211
+    ## 19      10    16 0.09770708 0.9786230      19         31      211
+    ## 20      21     9 0.05589825 0.9627311      20         31      211
+    ## 21       1    16 0.09010382 0.9885939      21         31      211
+    ## 22       5    14 0.07546372 0.9765239      22         31      211
+    ## 23       8    16 0.08754579 0.9875822      23         31      211
+    ## 24       2    16 0.08762793 0.9894345      24         31      211
 
 # 2 Overview
 
@@ -84,12 +82,12 @@ We’ll have a look at some data I collected. Note the warning message
 below.
 
 ``` r
-file_name = "./sample_data/sample_data.txt"
+file_name = "./sample_data/sample_data_updated.txt"
 raw_data = read.table(file_name, fill = TRUE, sep = ",")
 ```
 
-    ## Warning in scan(file = file, what = what, sep = sep, quote = quote, dec = dec, :
-    ## embedded nul(s) found in input
+    ## Warning in scan(file = file, what = what, sep = sep, quote = quote, dec = dec,
+    ## : embedded nul(s) found in input
 
 ``` r
 head(raw_data[,1:8]) # truncating the output for neatness
@@ -264,16 +262,16 @@ depending on what you need.
 
 `plot_my_data` has a few arguments you can input:
 
--   `start_time` and `end_time` can be altered to limit analysis to the
-    desired time. For example, if I wanted to discard the first 30
-    seconds, I’d set `start_time = 31`, and if I wanted to end if 3
-    minutes after, I’d set `end_time = 211`.
+- `start_time` and `end_time` can be altered to limit analysis to the
+  desired time. For example, if I wanted to discard the first 30
+  seconds, I’d set `start_time = 31`, and if I wanted to end if 3
+  minutes after, I’d set `end_time = 211`.
 
--   `show_plots = TRUE` will allow you to run through all the individual
-    plots, pressing enter each time to move to the next plot (hit esc to
-    quit out of it). Informative but probably set `show_plots = FALSE`
-    if you have a ton of plots. Note that it plots all measurements,
-    ignoring the start/end time arguments.
+- `show_plots = TRUE` will allow you to run through all the individual
+  plots, pressing enter each time to move to the next plot (hit esc to
+  quit out of it). Informative but probably set `show_plots = FALSE` if
+  you have a ton of plots. Note that it plots all measurements, ignoring
+  the start/end time arguments.
 
 As an example, here’s the final data set for the start and end times I
 mention earlier:
@@ -283,35 +281,75 @@ final_data = plot_my_data(clean_data, start_time = 31, end_time = 211, show_plot
 final_data
 ```
 
-    ##    plot_no delta       grad        r2 session
-    ## 1       18    11 0.06479671 0.9834629       1
-    ## 2       15    11 0.05712723 0.9694242       2
-    ## 3       22     9 0.04880192 0.9697688       3
-    ## 4       13     9 0.06027159 0.9640789       4
-    ## 5        7    16 0.08527190 0.9767292       5
-    ## 6        9    17 0.09013822 0.9769603       6
-    ## 7        6    22 0.12339117 0.9918767       7
-    ## 8       17    13 0.07624107 0.9859947       8
-    ## 9       19    11 0.06298747 0.9841913       9
-    ## 10      12    14 0.07540526 0.9819641      10
-    ## 11      11    14 0.08890071 0.9576906      11
-    ## 12      23    12 0.06795580 0.9804856      12
-    ## 13      16    14 0.08128832 0.9562424      13
-    ## 14      24    10 0.05373219 0.9767987      14
-    ## 15      20    10 0.06082812 0.9689407      15
-    ## 16       3    16 0.09321029 0.9867619      16
-    ## 17      14    16 0.08824294 0.9903690      17
-    ## 18       4    19 0.10432680 0.9889139      18
-    ## 19      10    16 0.09770708 0.9786230      19
-    ## 20      21     9 0.05597312 0.9631024      20
-    ## 21       1    16 0.09010382 0.9885939      21
-    ## 22       5    14 0.07560008 0.9768009      22
-    ## 23       8    16 0.08754579 0.9875822      23
-    ## 24       2    16 0.08773099 0.9895489      24
+    ##    plot_no delta       grad        r2 session start_time end_time
+    ## 1       18    11 0.06479671 0.9834629       1         31      211
+    ## 2       15    11 0.05693479 0.9693733       2         31      211
+    ## 3       22     9 0.04884671 0.9693819       3         31      211
+    ## 4       13     9 0.06027159 0.9640789       4         31      211
+    ## 5        7    16 0.08515439 0.9763935       5         31      211
+    ## 6        9    17 0.09013822 0.9769603       6         31      211
+    ## 7        6    21 0.12318932 0.9918772       7         31      211
+    ## 8       17    13 0.07624107 0.9859947       8         31      211
+    ## 9       19    11 0.06298747 0.9841913       9         31      211
+    ## 10      12    14 0.07540526 0.9819641      10         31      211
+    ## 11      11    14 0.08876596 0.9570105      11         31      211
+    ## 12      23    12 0.06795580 0.9804856      12         31      211
+    ## 13      16    14 0.08128832 0.9562424      13         31      211
+    ## 14      24    10 0.05368267 0.9764279      14         31      211
+    ## 15      20    10 0.06082812 0.9689407      15         31      211
+    ## 16       3    16 0.09321029 0.9867619      16         31      211
+    ## 17      14    16 0.08824896 0.9902119      17         31      211
+    ## 18       4    19 0.10432680 0.9889139      18         31      211
+    ## 19      10    16 0.09770708 0.9786230      19         31      211
+    ## 20      21     9 0.05589825 0.9627311      20         31      211
+    ## 21       1    16 0.09010382 0.9885939      21         31      211
+    ## 22       5    14 0.07546372 0.9765239      22         31      211
+    ## 23       8    16 0.08754579 0.9875822      23         31      211
+    ## 24       2    16 0.08762793 0.9894345      24         31      211
 
--   `plot_no` = plot number
--   `delta` = total change in CO2 from start to end time
--   `grad` = gradient of the fitted linear model (note this says nothing
-    about the fit of the line)
--   `r2` = R squared value of the fitted linear model
--   `session` = measurement session
+- `plot_no` = plot number
+- `delta` = total change in CO2 from start to end time
+- `grad` = gradient of the fitted linear model (note this says nothing
+  about the fit of the line)
+- `r2` = R squared value of the fitted linear model
+- `session` = measurement session
+
+## 2.5 Varying start and end times in plot_my_data
+
+Start and end times can now be varied in `plot_my_data` by entering them
+as a vector in the start or end time argument.
+
+``` r
+# Arbitrarily setting some start and end times
+my_start_times = 1:24
+my_end_times = 120-1:24
+
+final_data = plot_my_data(clean_data, start_time = my_start_times, end_time = my_end_times, show_plots = FALSE)
+final_data
+```
+
+    ##    plot_no delta       grad        r2 session start_time end_time
+    ## 1       18     6 0.04266486 0.8486891       1          1      119
+    ## 2       15     7 0.05231608 0.9216851       2          2      118
+    ## 3       22     6 0.05588297 0.8618288       3          3      117
+    ## 4       13     5 0.04145319 0.8817171       4          4      116
+    ## 5        7     8 0.06521587 0.9275215       5          5      115
+    ## 6        9     7 0.08026133 0.9252733       6          6      114
+    ## 7        6    10 0.09948767 0.9725055       7          7      113
+    ## 8       17     8 0.06559196 0.9095944       8          8      112
+    ## 9       19     8 0.06624786 0.9394579       9          9      111
+    ## 10      12     7 0.06722190 0.9637371      10         10      110
+    ## 11      11     6 0.05090909 0.8090733      11         11      109
+    ## 12      23     8 0.08503840 0.9652318      12         12      108
+    ## 13      16     6 0.06132419 0.9023766      13         13      107
+    ## 14      24     7 0.06459073 0.9477380      14         14      106
+    ## 15      20     5 0.04271381 0.8897932      15         15      105
+    ## 16       3     6 0.07858359 0.9468011      16         16      104
+    ## 17      14     9 0.09887366 0.9758248      17         17      103
+    ## 18       4     8 0.09542701 0.9603205      18         18      102
+    ## 19      10     6 0.07058898 0.9237426      19         19      101
+    ## 20      21     4 0.03852755 0.7866383      20         20      100
+    ## 21       1     8 0.09754138 0.9317145      21         21       99
+    ## 22       5     6 0.05983490 0.8297346      22         22       98
+    ## 23       8     6 0.08694168 0.9278745      23         23       97
+    ## 24       2     5 0.07379983 0.9355765      24         24       96
